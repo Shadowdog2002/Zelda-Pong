@@ -15,7 +15,7 @@ class BasicStage(Stage):
     def __init__(self, screen:pygame.Surface):
         super().__init__(screen)
         self.items: list[Item] = []
-        
+        self.circle_image = pygame.image.load("Sprites/Items/Items_Circle.png.png")
 
         itemRect = pygame.Rect(0,0,100,100)
         itemRect.center = (350,200)
@@ -40,9 +40,8 @@ class BasicStage(Stage):
 
         
     def draw(self, screen: pygame.Surface):
-        circle_image = pygame.image.load(r"Sprites\Items\Items_Circle.png.png")
         for item in self.items:
-            self.screen.blit(circle_image,circle_image.get_rect(center = item.rect.center))
+            self.screen.blit(self.circle_image, self.circle_image.get_rect(center = item.rect.center))
             item.draw(self.screen)
 
         super().draw(screen)

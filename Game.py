@@ -33,10 +33,10 @@ class Game():
 
         self.players.append(Player(self.screenRect.w//20, self.screenRect.h//2, 
                       25,100, 
-                      pygame.Color("white"), 0, dir=RIGHT, img_path = r'Sprites\Players\Link.png'))
+                      pygame.Color("white"), 0, dir=RIGHT, img_path = 'Sprites/Players/Link.png'))
         self.players.append(Player(self.screenRect.w - self.screenRect.w//20 - 20, self.screenRect.h//2, 
                       25,100, 
-                      pygame.Color("white"), 1, dir=LEFT, img_path = r'Sprites\Players\Zelda.png'))
+                      pygame.Color("white"), 1, dir=LEFT, img_path = 'Sprites/Players/Zelda.png'))
 
         self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(5, -5)))
     
@@ -93,9 +93,9 @@ class Game():
                 print(f"Score: {self.score}")
                 self.score_text1.text = f"{self.score[0]}"
                 self.score_text2.text = f"{self.score[1]}"
-
-                ball.rect.center = (self.screenRect.w//2, self.screenRect.h//2)
-                ball.vel = pygame.Vector2(random.randint(-8,8), random.randint(-8,8))
+                
+                self.balls.remove(ball)
+                self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(random.randint(-8,8), random.randint(-8,8))))
         for ball in self.balls:
             playerCollided = ball.rect.collideobjects(self.players, key = lambda o: o.rect)
             if playerCollided is not None:        #Any collisions found

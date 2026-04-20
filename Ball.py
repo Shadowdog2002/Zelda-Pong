@@ -25,6 +25,7 @@ class Ball(pygame.sprite.Sprite):
         #tuning parameters
         self.min_vel = 7
         self.max_vel = 19
+        self.xlim = 4
 
         #debug objects
         self.debug_vecs = []
@@ -55,9 +56,8 @@ class Ball(pygame.sprite.Sprite):
 
     def move(self):
         #limit velocity
-        xlim = 3.8
-        if abs(self.vel.x)<xlim:
-            self.vel.x = xlim if self.vel.x>0 else -xlim
+        if abs(self.vel.x)<self.xlim:
+            self.vel.x = self.xlim if self.vel.x>0 else -self.xlim
         self.vel.clamp_magnitude_ip(self.min_vel, self.max_vel)
 
         self.rect.centerx += int(self.vel.x)

@@ -16,7 +16,7 @@ class Item(ABC):
 
 
 class HylianShield(Item):
-    def __init__(self, rect: pygame.Rect, img_path = r"Sprites\Items\Hylian Shield.png") -> None:
+    def __init__(self, rect: pygame.Rect, img_path = "Sprites/Items/Hylian Shield.png") -> None:
         super().__init__(rect)
         self.image = pygame.image.load(img_path)
 
@@ -24,7 +24,7 @@ class HylianShield(Item):
         return super().ability()
 
 class MasterSword(Item):
-    def __init__(self, rect: pygame.Rect, img_path = r"Sprites\Items\Master Sword.png") -> None:
+    def __init__(self, rect: pygame.Rect, img_path = "Sprites/Items/Master sword.png") -> None:
         super().__init__(rect)
         self.image = pygame.image.load(img_path)
 

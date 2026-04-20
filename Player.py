@@ -5,7 +5,7 @@ RIGHT = 1
 LEFT = -1
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x:int, y:int, width:int, height:int, color:pygame.Color, id:int, img_path:str = r'Sprites\Players\Link.png', dir = RIGHT):
+    def __init__(self, x:int, y:int, width:int, height:int, color:pygame.Color, id:int, img_path:str = 'Sprites/Players/Link.png', dir = RIGHT):
         super().__init__()
         self.image = pygame.image.load(img_path).convert_alpha()
 

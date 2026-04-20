@@ -17,3 +17,13 @@ env/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Pygbag
+*.wav
+*.mp3
+*.pyc
+*.egg-info
+*-pygbag.???
+/dist
+/build/web-cache
+/build/version.txt
