@@ -11,8 +11,7 @@ class Ball(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((radius, radius))
         self.image.fill(color)
-        self.particles = []
-        self.particleTrail = ParticleTrail(colors=["orange","red","yellow"])
+        self.particleTrail = ParticleTrail(colors=["orange","red","yellow"],max=20)
 
 
         self.rect = self.image.get_rect()
@@ -35,11 +34,9 @@ class Ball(pygame.sprite.Sprite):
         #give a particle trail when at high magnitude
         if self.vel.magnitude()>10:
             self.image.fill("red")
-            # pygame.draw.rect(self.image,random.choice(["orange","red","yellow"]),self.image.get_bounding_rect(),width=2)
-            self.particleTrail.add_particle(self.rect.center,num = self.rect.bottom)
+            self.particleTrail.add_particle(self.rect.center, chance=.7)
             self.particleTrail.update()
             self.particleTrail.draw(screen)
-            # print(len(self.particleTrail.particleArray))
         #clear particle trail when slow
         else:
             self.particleTrail.clear()

@@ -38,15 +38,11 @@ class ParticleTrail:
         self.particleArray: list[Particle] = []
     
     def add_particle(self,pos,chance = 0.3,num = 1):
-        num = min(1,num)
         for i in range(num):
             if random.random()<chance:
+                if len(self.particleArray) >= self.max:
+                    self.particleArray.pop(0)
                 self.particleArray.append(Particle(pos,self.decay,color = random.choice(self.colors)))
-
-
-    
-        if random.random()<chance:
-            self.particleArray.append(Particle(pos,self.decay,color = random.choice(self.colors)))
     
     def update(self):
         for p in self.particleArray:
