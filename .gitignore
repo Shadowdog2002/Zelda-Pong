@@ -1,0 +1,19 @@
+# Test folder
+Test/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
