@@ -2,7 +2,7 @@ import pygame
 from Player import *
 from debug_objects import *
 from ParticleEffects import *
-
+import random
 RIGHT = 1
 LEFT = -1
 
@@ -19,7 +19,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.center = (x, y)
         
         self.vel = vel
-        self.last_hit_player = -1
+        self.last_hit_player_id = -1
+        self.last_hit_player: Player|None = None 
 
         #tuning parameters
         self.min_vel = 7
@@ -33,10 +34,11 @@ class Ball(pygame.sprite.Sprite):
         #give a particle trail when at high magnitude
         if self.vel.magnitude()>10:
             self.image.fill("red")
+            # pygame.draw.rect(self.image,random.choice(["orange","red","yellow"]),self.image.get_bounding_rect(),width=2)
             self.particleTrail.add_particle(self.rect.center,num = self.rect.bottom)
             self.particleTrail.update()
             self.particleTrail.draw(screen)
-            print(len(self.particleTrail.particleArray))
+            # print(len(self.particleTrail.particleArray))
         #clear particle trail when slow
         else:
             self.particleTrail.clear()
@@ -53,6 +55,9 @@ class Ball(pygame.sprite.Sprite):
 
     def move(self):
         #limit velocity
+        xlim = 3.8
+        if abs(self.vel.x)<xlim:
+            self.vel.x = xlim if self.vel.x>0 else -xlim
         self.vel.clamp_magnitude_ip(self.min_vel, self.max_vel)
 
         self.rect.centerx += int(self.vel.x)
@@ -65,10 +70,10 @@ class Ball(pygame.sprite.Sprite):
 
     def bounce(self, player:Player):
         # prevent ball from bouncing multiple times on the same player
-        if player.id == self.last_hit_player:
-            print(f"Ball hit the same player {player.id}, not bouncing")
+        if player is self.last_hit_player and player is not None:
+            print(f"same player object hit {player.id}")
             return
-        self.last_hit_player = player.id
+        self.last_hit_player = player
 
         vec_to_player = pygame.Vector2(player.rect.center) - pygame.Vector2(self.rect.center)
 
@@ -98,4 +103,4 @@ class Ball(pygame.sprite.Sprite):
             return 0
 
     def __str__(self) -> str:
-        return f"Ball at {self.rect}"
+        return f"Ball Velocity: {self.vel}\n Magnitude:{self.vel.magnitude()} Position {self.rect.center}"

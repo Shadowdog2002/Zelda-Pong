@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = pygame.Rect(x, y, width, height)
         # self.rect.topright = self.image.get_rect().topright
-        self.speed = 5
+        self.speed = 10
         self.vel = self.speed
 
         self.id = id

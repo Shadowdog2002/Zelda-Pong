@@ -9,8 +9,10 @@ import math
 class Game():
     def __init__(self, screen:pygame.Surface):
         self.screen = screen
-        self.players = []
-        self.ball:  Ball|None = None
+        print(self.screen.get_rect())
+        self.screenRect = self.screen.get_rect()
+        self.players: list[Player] = []
+        self.balls: list[Ball] = []
         self.score = [0, 0]
         self.stage = BasicStage(screen)
 
@@ -22,18 +24,21 @@ class Game():
 
     def setup(self):
         self.players = []
+        self.balls = []
         self.debug_vecs = []
         self.debug_points = []
         self.debug_texts = []
 
-        self.players.append(Player(self.screen.get_width()//20, self.screen.get_height()//2, 
-                      25,100, 
-                      pygame.Color("white"), 0, dir=RIGHT))
-        self.players.append(Player(self.screen.get_width() - self.screen.get_width()//20 - 20, self.screen.get_height()//2, 
-                      25,100, 
-                      pygame.Color("white"), 1, dir=LEFT))
+        self.stage.setup()
 
-        self.ball = Ball(self.screen.get_width()//2, self.screen.get_height()//2, 10, pygame.Color("white"), pygame.Vector2(5, 5))
+        self.players.append(Player(self.screenRect.w//20, self.screenRect.h//2, 
+                      25,100, 
+                      pygame.Color("white"), 0, dir=RIGHT, img_path = r'Sprites\Players\Link.png'))
+        self.players.append(Player(self.screenRect.w - self.screenRect.w//20 - 20, self.screenRect.h//2, 
+                      25,100, 
+                      pygame.Color("white"), 1, dir=LEFT, img_path = r'Sprites\Players\Zelda.png'))
+
+        self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(5, -5)))
     
         self.score = [0, 0]
         self.score_text1 = TextDebug(f"{self.score[0]}", (self.players[0].rect.left, 10),font_size=40,font_name="consolas")
@@ -43,57 +48,58 @@ class Game():
 
 
     def update(self):
-        if self.ball is None:
-            return
 
         keys = pygame.key.get_pressed()
+        #player movement
         if keys[pygame.K_UP]:
-            self.players[0].move(UP)
-            self.players[0].was_moving = True
-        elif keys[pygame.K_DOWN]:
-            self.players[0].move(DOWN)
-            self.players[0].was_moving = True
-        else:
-            self.players[0].was_moving = False
-        
-        if keys[pygame.K_w]:
             self.players[1].move(UP)
             self.players[1].was_moving = True
-        elif keys[pygame.K_s]:
+        elif keys[pygame.K_DOWN]:
             self.players[1].move(DOWN)
             self.players[1].was_moving = True
         else:
             self.players[1].was_moving = False
+        
+        if keys[pygame.K_w]:
+            self.players[0].move(UP)
+            self.players[0].was_moving = True
+        elif keys[pygame.K_s]:
+            self.players[0].move(DOWN)
+            self.players[0].was_moving = True
+        else:
+            self.players[0].was_moving = False
 
-        if keys[pygame.K_l]:
-            self.ball.vel.rotate_ip(5)
-        if keys[pygame.K_k]:
-            self.ball.vel.rotate_ip(-5)
+        #ball control
+        if keys[pygame.K_m]:
+            self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(random.randint(-8,8), random.randint(-8,8))))
+        for ball in self.balls:
+            if keys[pygame.K_l]:
+                ball.vel.rotate_ip(5)
+            if keys[pygame.K_k]:
+                ball.vel.rotate_ip(-5)
 
-        #debugging vector
-        self.ball.move()
-        self.debug_points.append(PointDebug(self.ball.rect.center))
+        #Move Balls
+        for ball in self.balls:
+            ball.move()
+
 
         #collision detection
-        if self.ball.reach_goal() !=0:
-            if self.ball.reach_goal() == -1:
-                self.score[1] += 1
-            else:
-                self.score[0] += 1
-            print(f"Score: {self.score}")
-            self.score_text1.text = f"{self.score[0]}"
-            self.score_text2.text = f"{self.score[1]}"
+        for ball in self.balls:
+            if ball.reach_goal() !=0:
+                if ball.reach_goal() == -1: #Right side goal
+                    self.score[1] += 1
+                else:                       #Left side goal
+                    self.score[0] += 1
+                print(f"Score: {self.score}")
+                self.score_text1.text = f"{self.score[0]}"
+                self.score_text2.text = f"{self.score[1]}"
 
-            self.ball.rect.center = (self.screen.get_width()//2, self.screen.get_height()//2)
-            self.ball.vel = pygame.Vector2(5 * (-1 if self.ball.vel.x < 0 else 1), 5)
-
-        playerCollided = self.ball.rect.collidelist(self.players)
-        if playerCollided != -1:
-            player = self.players[playerCollided]
-            
-            #debugging vector
-            self.ball.bounce(player)
-
+                ball.rect.center = (self.screenRect.w//2, self.screenRect.h//2)
+                ball.vel = pygame.Vector2(random.randint(-8,8), random.randint(-8,8))
+        for ball in self.balls:
+            playerCollided = ball.rect.collideobjects(self.players, key = lambda o: o.rect)
+            if playerCollided is not None:        #Any collisions found
+                ball.bounce(playerCollided)
 
     def draw(self):
         self.stage.draw(self.screen)
@@ -105,8 +111,8 @@ class Game():
 
         for player in self.players:
             player.draw(self.screen, debug=self.debug_mode)
-        if self.ball is not None:
-            self.ball.draw(self.screen, debug=self.debug_mode)
+        for ball in self.balls:
+            ball.draw(self.screen, debug=self.debug_mode)
         
 
         #drawing debugging objects
@@ -122,5 +128,5 @@ class Game():
                 TextDebug(f"impact 2: {self.debug_vecs[2].vec/self.debug_vecs[2].scale}  toPlayer 2: {self.debug_vecs[3].vec/self.debug_vecs[3].scale}, Angle: {self.debug_vecs[2].vec.angle_to(self.debug_vecs[3].vec)}", (self.players[0].rect.left, 50)).draw(self.screen)
             for text in self.debug_texts:
                 text.draw(self.screen)
-            if self.ball is not None:
-                TextDebug(f"Ball velocity: {self.ball.vel.magnitude()}", (self.players[0].rect.left, self.screen.get_height() - 30)).draw(self.screen)
+            if self.balls is not []:
+                TextDebug(str(self.balls[0]), (self.players[0].rect.left, self.screenRect.h - 60)).draw(self.screen)

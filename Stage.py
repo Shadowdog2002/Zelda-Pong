@@ -1,5 +1,5 @@
 import pygame
-
+from  Items import *
 
 class Stage():
     def __init__(self, screen:pygame.Surface):
@@ -14,13 +14,35 @@ class Stage():
 class BasicStage(Stage):
     def __init__(self, screen:pygame.Surface):
         super().__init__(screen)
+        self.items: list[Item] = []
+        
+
+        itemRect = pygame.Rect(0,0,100,100)
+        itemRect.center = (350,200)
+        self.items.append(HylianShield(itemRect))
+
+        itemRect = pygame.Rect(0,0,100,100)
+        itemRect.center = (self.screen.get_width()-350, self.screen.get_height()-300)
+        self.items.append(MasterSword(itemRect))
+        
+        
+
+    def setup(self):
+        self.items = []
+        #create item rect, center it, and append to item list
+        itemRect = pygame.Rect(0,0,100,100)
+        itemRect.center = (350,200)
+        self.items.append(HylianShield(itemRect))
+
+        itemRect = pygame.Rect(0,0,100,100)
+        itemRect.center = (self.screen.get_width()-350, self.screen.get_height()-300)
+        self.items.append(MasterSword(itemRect))
+
         
     def draw(self, screen: pygame.Surface):
-        def draw_dotted_circle(screen, color, center, radius, width=2, dots=10):
-            for i in range(0, 314*2, (314*2)//dots):
-                pygame.draw.arc(screen, "white",(center[0],center[1],radius,radius),0.01*i,0.01*(i+20), width=width)
-        
-        draw_dotted_circle(self.screen, "white", (250, 200), 100, width=2, dots=10)
-        draw_dotted_circle(self.screen, "white", (screen.get_width()-350, screen.get_height()-300), 100, width=2, dots=10)
+        circle_image = pygame.image.load(r"Sprites\Items\Items_Circle.png.png")
+        for item in self.items:
+            self.screen.blit(circle_image,circle_image.get_rect(center = item.rect.center))
+            item.draw(self.screen)
 
-        super().draw(screen)    
+        super().draw(screen)

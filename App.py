@@ -44,21 +44,6 @@ while running:
                 print(f"Game paused: {pause}")
                 
     # RENDER YOUR GAME HERE
-    # movement
-    # keys = pygame.key.get_pressed()
-    # if keys[pygame.K_UP]:
-    #     # print("UP is pressed")
-    #     players[0].move(UP)
-    # if keys[pygame.K_DOWN]:
-    #     # print("DOWN is pressed")
-    #     players[0].move(DOWN)
-    # if keys[pygame.K_w]:
-    #     # print("W is pressed")
-    #     players[1].move(UP)
-    # if keys[pygame.K_s]:
-    #     # print("S is pressed")
-    #     players[1].move(DOWN)
-
         
     if pause:
         if pygame.key.get_pressed()[pygame.K_RIGHT]:
