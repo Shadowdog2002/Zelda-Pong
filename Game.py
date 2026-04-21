@@ -9,18 +9,20 @@ import math
 class Game():
     def __init__(self, screen:pygame.Surface):
         self.screen = screen
-        print(self.screen.get_rect())
         self.screenRect = self.screen.get_rect()
         self.players: list[Player] = []
         self.balls: list[Ball] = []
         self.score = [0, 0]
-        self.stage = BasicStage(screen)
+        # self.stage = BasicStage(screen)
+        self.stage = WaterStage(screen,players=self.players)
 
         self.debug_vecs = []
         self.debug_points = []
         self.debug_texts = []
 
         self.debug_mode = False
+
+        self.setup()
 
     def setup(self):
         self.players = []
@@ -29,17 +31,21 @@ class Game():
         self.debug_points = []
         self.debug_texts = []
 
-        self.stage.setup()
-
-        self.players.append(Player(self.screenRect.w//20, self.screenRect.h//2, 
+        
+        #create players
+        self.players.append(Player(self.screenRect.w//20, self.screenRect.h//2-50, 
                       25,100, 
                       pygame.Color("white"), 0, dir=RIGHT, img_path = 'Sprites/Players/Link.png'))
-        self.players.append(Player(self.screenRect.w - self.screenRect.w//20 - 20, self.screenRect.h//2, 
+        self.players.append(Player(self.screenRect.w - self.screenRect.w//20 - 20, self.screenRect.h//2-50, 
                       25,100, 
                       pygame.Color("white"), 1, dir=LEFT, img_path = 'Sprites/Players/Zelda.png'))
-
-        self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(5, -5)))
+        
+        #create a ball
+        self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(5, 0)))
     
+        #setup the stage
+        self.stage.setup(players = self.players)
+
         self.score = [0, 0]
         self.score_text1 = TextDebug(f"{self.score[0]}", (self.players[0].rect.left, 10),font_size=40,font_name="consolas")
 
@@ -84,6 +90,7 @@ class Game():
 
 
         #collision detection
+        #goal collision
         for ball in self.balls:
             if ball.reach_goal() !=0:
                 if ball.reach_goal() == -1: #Right side goal
@@ -96,14 +103,22 @@ class Game():
                 
                 self.balls.remove(ball)
                 self.balls.append(Ball(self.screenRect.w//2, self.screenRect.h//2, 10, pygame.Color("white"), pygame.Vector2(random.randint(-8,8), random.randint(-8,8))))
+        #player collision
         for ball in self.balls:
             playerCollided = ball.rect.collideobjects(self.players, key = lambda o: o.rect)
             if playerCollided is not None:        #Any collisions found
                 ball.bounce(playerCollided)
+        
+        #check for stage object collisions
+        self.stage.stageObjectCollisions(self.balls)
+        self.stage.stageHazardCollisions(self.balls)
+        self.stage.update()
+
+        
+        
 
     def draw(self):
         self.stage.draw(self.screen)
-        
 
         #draw score
         self.score_text1.draw(self.screen)
@@ -129,4 +144,5 @@ class Game():
             for text in self.debug_texts:
                 text.draw(self.screen)
             if self.balls is not []:
-                TextDebug(str(self.balls[0]), (self.players[0].rect.left, self.screenRect.h - 60)).draw(self.screen)
+                TextDebug(f"{self.balls[0].last_hit_player}", (self.players[0].rect.left, self.screenRect.h - 100)).draw(self.screen)
+                TextDebug(f"{self.balls[0].last_hit_stage_object}", (self.players[0].rect.left, self.screenRect.h - 60)).draw(self.screen)

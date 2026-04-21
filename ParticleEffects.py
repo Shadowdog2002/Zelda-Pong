@@ -3,7 +3,7 @@ import random
 
 class Particle:
 
-    def __init__(self, pos,decay = 5,color = "orange"):
+    def __init__(self, pos,decay = 5,color:pygame.Color = pygame.Color("orange")):
         self.pos = list(pos)
         # Random velocity to make them spread out like a trail
         self.vel = [random.uniform(-1, 1), random.uniform(-1, 1)]
@@ -31,18 +31,20 @@ class Particle:
                                int(self.radius))
             
 class ParticleTrail:
-    def __init__(self,decay=5,colors=["white"],max=20) -> None:
+    def __init__(self,decay=5,colors:list[pygame.Color] = [pygame.Color("white")],max=20) -> None:
         self.decay = decay
         self.colors = colors
         self.max = max
         self.particleArray: list[Particle] = []
     
-    def add_particle(self,pos,chance = 0.3,num = 1):
+    def add_particle(self,pos:tuple[int,int],colors:list[pygame.Color] = [],chance = 0.3,num = 1,):
+        particleColors = colors if colors else self.colors
         for i in range(num):
             if random.random()<chance:
                 if len(self.particleArray) >= self.max:
                     self.particleArray.pop(0)
-                self.particleArray.append(Particle(pos,self.decay,color = random.choice(self.colors)))
+                
+                self.particleArray.append(Particle(pos,self.decay,color = random.choice(particleColors)))
     
     def update(self):
         for p in self.particleArray:

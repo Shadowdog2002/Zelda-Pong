@@ -4,9 +4,9 @@ DOWN = 1
 RIGHT = 1
 LEFT = -1
 
-class Player(pygame.sprite.Sprite):
+class Player():
     def __init__(self, x:int, y:int, width:int, height:int, color:pygame.Color, id:int, img_path:str = 'Sprites/Players/Link.png', dir = RIGHT):
-        super().__init__()
+        # super().__init__()
         self.image = pygame.image.load(img_path).convert_alpha()
 
         self.dir =  dir
@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = pygame.Rect(x, y, width, height)
         # self.rect.topright = self.image.get_rect().topright
-        self.speed = 10
+        self.speed = 6
         self.vel = self.speed
 
         self.id = id
@@ -45,4 +45,4 @@ class Player(pygame.sprite.Sprite):
     
 
     def __str__(self) -> str:
-        return f"Player at {self.rect}"
+        return f"{self.id} at {self.rect}"
