@@ -19,8 +19,9 @@ env/
 Thumbs.db
 
 # Large build artifacts
-docs/*.tar.gz
-docs/*.apk
+*.tar.gz
+*.apk
+/build/
 
 # Pygbag
 *.wav
