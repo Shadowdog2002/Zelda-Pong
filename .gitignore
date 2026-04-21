@@ -18,6 +18,10 @@ env/
 .DS_Store
 Thumbs.db
 
+# Large build artifacts
+docs/*.tar.gz
+docs/*.apk
+
 # Pygbag
 *.wav
 *.mp3
