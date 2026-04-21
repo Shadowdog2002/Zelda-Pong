@@ -19,12 +19,12 @@ env/
 Thumbs.db
 
 # Large build artifacts
-*.tar.gz
+*.apk
 /build/
 
-# Ignore apk everywhere except docs
-*.apk
-!docs/pong.apk
+# Ignore tar.gz everywhere except docs
+*.tar.gz
+!docs/pong.tar.gz
 
 # Pygbag
 *.wav
